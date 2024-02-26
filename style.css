@@ -1,0 +1,42 @@
+/* Map styling */
+
+#map {
+    border: 2px solid #444;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5); 
+  }
+  
+  /* Custom Leaflet Draw control toolbar */
+  .leaflet-draw-toolbar {
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  
+  .leaflet-draw-toolbar a {
+    background-color: #2c3e50; 
+    color: #fff;
+    border-radius: 5px;
+  }
+  
+  .leaflet-draw-toolbar a:hover {
+    background-color: #1a252f;
+  }
+  
+  /* Page body */
+  body {
+    font-family: Arial;
+    padding: 25px 50px;
+    padding:20%;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  /* Info panel */  
+  .info {
+    padding: 18px;
+    font-size: 18px;
+    background: #f8f8f8;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+    border-radius: 10px; 
+  }
