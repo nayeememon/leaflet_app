@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaflet Draw Demo</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+
+  <!-- Leaflet Draw CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css">
+  <link rel="'stylesheet" href="style.css">
+</head>
+<body style="padding: 3%;">
+
+  <div id="map" style="height: 500px;"></div>
+  <!-- <button id="export">Download GeoJSON</button> -->
+  <button id="exportBtn">Export</button>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  
+  <!-- Leaflet Draw JavaScript-->
+  <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+  
+  <script>
+    
+    // Initialize map
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Initialize Leaflet Draw control and add to map
+   // Feature group which will contain user-drawn polygons
+var drawnItems = new L.FeatureGroup();
+map.addLayer(drawnItems);
+
+// Initialize Leaflet Draw control for polygons
+var drawControl = new L.Control.Draw({
+  draw: {
+    polygon: true,
+    polyline: false,
+    circle: false, 
+    rectangle: false,
+    marker: false
+  },
+  edit: {
+    featureGroup: drawnItems
+  }
+}).addTo(map);
+
+// Draw event listener to collect polygon bboxes
+map.on(L.Draw.Event.CREATED, function(event) {
+  var layer = event.layer;
+  var bbox = layer.getBounds();
+  // Do whatever you want with bbox data
+});
+
+
+// Draw event
+map.on(L.Draw.Event.CREATED, (e) => {
+
+// Get the new layer
+var layer = e.layer;  
+
+// Add new layer to feature group
+drawnItems.addLayer(layer);
+
+});
+
+// Delete event
+map.on(L.Draw.Event.DELETED, (e) => {
+
+e.layers.eachLayer((layer) => {
+
+  // Remove layer from feature group 
+  drawnItems.removeLayer(layer);
+
+});
+
+});
+// Export button click handler
+document.getElementById('exportBtn').addEventListener('click', exportGeoJSON);
+
+
+// Export handler helper 
+function downloadAnchorNode(str, filename) {
+
+  var anchor = document.createElement('a');
+  anchor.setAttribute('href', str);
+  anchor.setAttribute('download', filename); 
+
+  document.body.appendChild(anchor); 
+  anchor.click(); 
+  anchor.remove();
+
+}
+
+    var exportGeoJSON = function() {
+
+        var geojson = drawnItems.toGeoJSON(); 
+        
+  // Stringify the GeoJSON
+        var jsonStr = JSON.stringify(geojson);
+//   var data = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(geojson));
+
+  // Create export
+//   downloadAnchorNode(jsonStr, 'dataStr');
+      
+    //   var dataStr = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(geojson)); // stringified geojson
+
+      var url = window.URL.createObjectURL(new Blob([jsonStr]));
+      var link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'jsonStr.geojson'); 
+      
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    document.getElementById('exportBtn').addEventListener('click', exportGeoJSON);
+
+
+
+
+  </script>
+
+</body>
+</html>
